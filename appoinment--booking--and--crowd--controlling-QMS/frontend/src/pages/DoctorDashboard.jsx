@@ -11,6 +11,7 @@ export default function DoctorDashboard() {
   const [session, setSession] = useState("morning");
   const [patients, setPatients] = useState([]);
   const [opdCount, setOpdCount] = useState(0);
+  const [endedPatient, setEndedPatient] = useState(null); // Track patient after call ends
 
   // 🔹 Load queue
   const load = async () => {
@@ -56,6 +57,35 @@ export default function DoctorDashboard() {
     await fetch(`${API}/doctor/emergency`, { method: "POST" });
   };
 
+  const handleEndCall = async (p) => {
+    // Just set this patient as ended to show Pharmacy button
+    // It will be completed AFTER saving prescription
+    setEndedPatient(p);
+  };
+
+  const sendPrescription = async () => {
+    const medsInput = document.getElementById("prescribedMeds").value;
+    if (!medsInput) {
+      alert("Please enter at least one medicine.");
+      return;
+    }
+    const medicinesArray = medsInput.split(",").map(m => m.trim());
+    
+    // Complete the call and save medicines
+    await fetch(`${API}/appointment/status`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: endedPatient._id,
+        status: "COMPLETED",
+        medicines: medicinesArray
+      }),
+    });
+
+    alert("Prescription Saved Successfully!");
+    setEndedPatient(null);
+  };
+
   return (
     <div className="doctor-bg">
       <div className="doctor-glass">
@@ -64,6 +94,43 @@ export default function DoctorDashboard() {
         <button className="emergency-btn" onClick={emergency}>
           🚨 Emergency Surgery
         </button>
+
+        {/* 🔹 PHARMACY ACTION AFTER ENDING CALL */}
+        {endedPatient && (
+          <div style={{
+            background: "#1e293b", margin: "15px 0", padding: "15px", 
+            borderRadius: "10px", border: "2px solid #38bdf8", textAlign: "left"
+          }}>
+            <h3 style={{color:"#38bdf8", marginTop:0}}>Call Ended for {endedPatient.patientName}</h3>
+            <p style={{fontSize: "14px"}}>Prescribe medicines to be saved in patient record:</p>
+            <input 
+              id="prescribedMeds" 
+              type="text" 
+              placeholder="e.g. Paracetamol 500mg, Cough Syrup" 
+              style={{width: "100%", padding:"10px", marginBottom:"10px", borderRadius:"5px", border:"none"}}
+            />
+            <div style={{display: "flex", gap: "10px"}}>
+              <button 
+                onClick={sendPrescription}
+                style={{background:"#22c55e", border:"none", padding:"10px 15px", color:"#fff", borderRadius:"5px", cursor:"pointer"}}
+              >
+                🩺 Save Prescription
+              </button>
+              <button 
+                onClick={async () => {
+                   await fetch(`${API}/appointment/status`, {
+                     method: "POST", headers: { "Content-Type": "application/json" },
+                     body: JSON.stringify({ id: endedPatient._id, status: "COMPLETED" })
+                   });
+                   setEndedPatient(null);
+                }}
+                style={{background:"#ef4444", border:"none", padding:"10px 15px", color:"#fff", borderRadius:"5px", cursor:"pointer"}}
+              >
+                ✕ Skip
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* 🔹 OPD LOAD INDICATOR */}
         <div style={{ marginBottom: "20px" }}>
@@ -135,8 +202,8 @@ export default function DoctorDashboard() {
               </button>
             )}
             {p.status === "IN_PROGRESS" && (
-              <button onClick={() => update(p._id, "COMPLETED")}>
-                End
+              <button onClick={() => handleEndCall(p)}>
+                End Call
               </button>
             )}
           </div>
