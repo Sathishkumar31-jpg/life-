@@ -3,6 +3,7 @@ import { auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
+import HospitalMap from "../components/HospitalMap";
 import "./QueuePage.css";
 
 const API = "http://localhost:5000";
@@ -82,18 +83,7 @@ export default function QueuePage() {
     };
   }, [user]);
 
-  // GPS LOGIC
-  const [gpsDist, setGpsDist] = useState(120); // 120 meters mock
-  useEffect(() => {
-    if (showMap) {
-      const interval = setInterval(() => {
-        setGpsDist(prev => (prev > 0 ? prev - 12 : 0));
-      }, 2500);
-      return () => clearInterval(interval);
-    } else {
-      setGpsDist(120);
-    }
-  }, [showMap]);
+
 
   if (!appt) return <p>Loading...</p>;
 
@@ -136,53 +126,18 @@ export default function QueuePage() {
     setAppt({ ...appt, isInsideHospital: true });
   };
 
-  const playVoice = () => {
-    if ("speechSynthesis" in window) {
-      const text = `${appt.doctorFloor} floor ku poonga... left side la ${appt.doctorRoom}`;
-      const utterance = new SpeechSynthesisUtterance(text);
-      window.speechSynthesis.speak(utterance);
-    } else {
-      alert("Voice navigation not supported in this browser.");
-    }
-  };
+
 
   return (
     <div className="queue-container">
-      {/* MAP MODAL */}
+      {/* SMART INDOOR NAVIGATION MODAL */}
       {showMap && (
-        <div className="map-modal-overlay" onClick={() => setShowMap(false)}>
-          <div className="map-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="close-btn" onClick={() => setShowMap(false)}>✖</button>
-            <h3>📍 Hospital Navigation</h3>
-            <div className="map-visual">
-               <div className="gps-status pulse" style={{ color: "#10b981", fontSize: "12px", marginBottom: "15px", fontWeight: "bold" }}>
-                 📍 Live GPS Active
-                 <br />
-                 Distance to Room: {gpsDist > 0 ? `${gpsDist} meters` : "You have arrived!"}
-               </div>
-
-               <div className="map-path">
-                 <div className="path-dot start">You</div>
-                 <div className="path-line"></div>
-                 <div className="path-dot arrive">
-                    {appt.doctorFloor} Floor<br/>
-                    {appt.doctorRoom}
-                 </div>
-               </div>
-            </div>
-            
-            <div className="step-directions">
-               <div className="step"><b>Step 1:</b> 🚶‍♂️ Entrance</div>
-               {gpsDist <= 80 && <div className="step"><b>Step 2:</b> 🛗 Take elevator to {appt.doctorFloor} floor</div>}
-               {gpsDist <= 40 && <div className="step"><b>Step 3:</b> ↪️ Turn Left from elevator</div>}
-               {gpsDist === 0 && <div className="step"><b>Step 4:</b> 🚪 Arrive at {appt.doctorRoom}</div>}
-            </div>
-
-            <button className="voice-btn" onClick={playVoice}>
-               Play Voice Navigation 🔊
-            </button>
-          </div>
-        </div>
+        <HospitalMap 
+          doctorFloor={appt.doctorFloor} 
+          doctorRoom={appt.doctorRoom} 
+          doctorName={appt.doctorName} 
+          onClose={() => setShowMap(false)} 
+        />
       )}
 
       {/* LEFT */}
