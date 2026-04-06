@@ -1,169 +1,223 @@
+/* ================= PREMIUM PHARMACY TRACKER (IMAGE-MATCH) ================= */
+
+:root {
+  --primary-blue: #38bdf8;
+  --bg-dark: #0f172a;
+  --card-bg: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --success-green: #22c55e;
+}
+
 .pharmacy-tracker-wrapper {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #0f172a;
-  color: #f8fafc;
+  background: var(--bg-dark);
+  color: var(--text-main);
   padding: 20px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 .tracker-card {
   width: 100%;
-  max-width: 500px;
-  background: #1e293b;
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
-  border: 1px solid #334155;
+  max-width: 480px;
+  background: var(--card-bg);
+  border-radius: 24px;
+  padding: 40px 30px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   text-align: center;
 }
 
 .tracker-card h2 {
   margin: 0;
-  color: #3b82f6;
-  font-size: 28px;
+  color: var(--text-main);
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 .subtitle {
-  color: #94a3b8;
-  margin-top: 5px;
-  margin-bottom: 30px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  margin-bottom: 35px;
+  font-size: 14px;
+  letter-spacing: 0.02em;
 }
 
-.prescription-mock {
-  background: rgba(255,255,255,0.03);
-  padding: 15px;
-  border-radius: 12px;
-  text-align: left;
-  border-left: 4px solid #10b981;
-  margin-bottom: 25px;
-}
-
-.prescription-mock h4 {
-  margin: 0 0 10px 0;
-  color: #f1f5f9;
-}
-
-.prescription-mock ul {
-  margin: 0;
-  padding-left: 20px;
-  color: #cbd5e1;
-  line-height: 1.6;
-}
-
-.btn-order-huge {
-  width: 100%;
-  padding: 16px;
-  font-size: 18px;
-  font-weight: bold;
-  border-radius: 12px;
-  border: none;
-  background: #10b981;
-  color: #0f172a;
-  cursor: pointer;
-  transition: 0.2s transform;
-}
-
-.btn-order-huge:hover {
-  transform: scale(1.02);
-  background: #059669;
-}
-
+/* --- Stepper UI --- */
 .stepper-ui {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 40px;
-  background: #0f172a;
-  padding: 15px;
-  border-radius: 12px;
+  margin-bottom: 45px;
+  padding: 0 10px;
 }
 
 .stepper-ui .step {
-  font-size: 11px;
-  font-weight: bold;
-  color: #64748b;
+  font-size: 10px;
+  font-weight: 600;
+  color: #475569;
   text-align: center;
-  max-width: 60px;
+  transition: color 0.3s ease;
 }
 
 .stepper-ui .step.active {
-  color: #38bdf8;
+  color: var(--primary-blue);
 }
 
 .step-line {
   height: 2px;
   flex: 1;
   background: #334155;
-  margin: 0 10px;
-  margin-bottom: 15px; /* Offset to align with text visually or build actual circles */
+  margin: 0 8px;
+  border-radius: 2px;
 }
 
 .step-line.active {
-  background: #38bdf8;
+  background: var(--primary-blue);
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
 }
 
-.status-jumbotron {
-  background: rgba(255,255,255,0.02);
-  border: 1px solid #334155;
-  padding: 30px 20px;
-  border-radius: 16px;
+/* --- Center Status --- */
+.status-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
 }
 
-.spinner {
-  font-size: 40px;
-  display: inline-block;
-  animation: spin 3s linear infinite;
-}
-
-@keyframes spin { 100% { transform: rotate(360deg); } }
-
-.payment-gateway .bill-card {
-  background: #0f172a;
-  padding: 20px;
-  border-radius: 12px;
+.box-icon-large {
+  width: 100px;
+  height: 100px;
   margin-bottom: 20px;
-  border: 1px solid #475569;
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
+  animation: float 3s ease-in-out infinite;
 }
 
-.bill-card h3 { color: #94a3b8; font-size: 14px; margin:0; text-transform: uppercase;}
-.bill-card h1 { color: #f8fafc; font-size: 40px; margin: 10px 0;}
-.bill-card p { margin: 0; color: #64748b; font-size: 12px;}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
 
-.btn-pay-now {
-  background: #3b82f6;
-  color: white;
-  width: 100%;
-  padding: 18px;
-  font-size: 18px;
+.status-msg h3 {
+  font-size: 24px;
+  margin: 0 0 8px 0;
+  color: var(--success-green);
+  font-weight: 700;
+}
+
+.status-msg p {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0;
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+/* --- Digital Receipt --- */
+.digital-receipt {
+  background: rgba(0, 0, 0, 0.15);
+  border: 1.5px dashed #334155;
+  border-radius: 16px;
+  padding: 25px;
+  text-align: left;
+  margin-bottom: 35px;
+}
+
+.receipt-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--primary-blue);
+  font-size: 14px;
   font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+}
+
+.receipt-row {
+  display: flex;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.receipt-row strong {
+  margin-right: 6px;
+  color: var(--text-main);
+}
+
+.receipt-row span {
+  color: var(--text-muted);
+}
+
+.receipt-divider {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  margin: 15px 0;
+}
+
+.receipt-total {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 5px;
+}
+
+.receipt-total span {
+  color: var(--primary-blue);
+}
+
+.receipt-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--success-green);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* --- Action Button --- */
+.btn-download-bill {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 14px;
   border: none;
-  border-radius: 12px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
 }
 
-.btn-pay-now.paying {
-  background: #64748b;
-  cursor: not-allowed;
-  animation: pulse-op 1s infinite;
+.btn-download-bill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 20px -3px rgba(79, 70, 229, 0.5);
+  background: linear-gradient(135deg, #6d28d9, #5b21b6);
 }
 
-@keyframes pulse-op {
-  0% { opacity: 0.7;}
-  50% { opacity: 1;}
-  100% { opacity: 0.7;}
+.btn-download-bill:active {
+  transform: translateY(0);
 }
 
-.success-anim h1 {
-  animation: popin 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+/* Micro-animations */
+.pulse-btn {
+  animation: pulse-shadow 2s infinite;
 }
 
-@keyframes popin {
-  0% { transform: scale(0); }
-  100% { transform: scale(1); }
-}
-
-.text-blue h2 {
-  color: #38bdf8;
+@keyframes pulse-shadow {
+  0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7); }
+  70% { box-shadow: 0 0 0 15px rgba(79, 70, 229, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
 }

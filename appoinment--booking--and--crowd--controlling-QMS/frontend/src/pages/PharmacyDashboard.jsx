@@ -65,7 +65,12 @@ export default function PharmacyDashboard() {
             <div className="medicines-list">
               <strong>Prescription:</strong>
               <ul>
-                {order.medicines.map((m, i) => <li key={i}>{m}</li>)}
+                {order.medicines.map((m, i) => (
+                  <li key={i} style={{display: "flex", justifyContent: "space-between"}}>
+                    <span>{m.name || m}</span>
+                    <span>₹{m.amount || 0}</span>
+                  </li>
+                ))}
               </ul>
             </div>
 
